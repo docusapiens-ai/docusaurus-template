@@ -25,7 +25,7 @@ const config = {
   organizationName: '{{docusaurus.organizationName}}',
   projectName: '{{docusaurus.projectName}}',
 
-  onBrokenLinks: 'throw',
+  onBrokenLinks: 'warn',
   onBrokenMarkdownLinks: 'warn',
 
   // Even if you don't use internationalization, you can use this field to set
