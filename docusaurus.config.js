@@ -70,6 +70,16 @@ const config = {
     ],
   ],
 
+  scripts: [
+    {
+      src: 'https://statics.docusapiens.ai/anythingllm-chat-widget.js',
+      'data-embed-id': 'example-uuid',
+      'data-base-api-url': 'https://api-chat-1010464005360.europe-west1.run.app',
+      'data-site-id': '{{docusaurus.id}}',
+      async: true,
+    },
+  ],
+
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
