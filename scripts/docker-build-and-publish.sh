@@ -13,6 +13,6 @@ fi
 ROOT_DIR=$(dirname "$0")/..
 cd $ROOT_DIR
 
-docker buildx build --platform linux/amd64 -t docusapiens-api:$TAG .
-docker tag docusapiens-api:$TAG europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai/api:$TAG
-docker push europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai/api:$TAG
+docker buildx build --platform linux/amd64 -t docusaurus-template:$TAG .
+docker tag docusaurus-template:$TAG europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai/docusaurus-template:$TAG
+docker push europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai/docusaurus-template:$TAG
