@@ -1,0 +1,90 @@
+// @ts-check
+// Note: type annotations allow type checking and IDEs autocompletion
+// Generated from template using Handlebars
+
+const {themes} = require('prism-react-renderer');
+const lightTheme = themes.github;
+const darkTheme = themes.dracula;
+
+const siteName = '{{siteName}}';
+const repoName = '{{repoName}}';
+const siteUrl = '{{siteUrl}}';
+const organizationName = '{{organizationName}}';
+const projectName = '{{projectName}}';
+const siteId = '{{siteId}}';
+const currentYear = new Date().getFullYear();
+
+/** @type {import('@docusaurus/types').Config} */
+const config = {
+  title: siteName,
+  tagline: repoName,
+  favicon: 'img/favicon.ico',
+
+  url: siteUrl,
+  baseUrl: '/',
+
+  organizationName,
+  projectName,
+
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en'],
+  },
+
+  // Docusaurus Faster configuration (v3.6+)
+  future: {
+    experimental_faster: true, // Enable all Docusaurus Faster optimizations
+  },
+
+  presets: [
+    [
+      'classic',
+      /** @type {import('@docusaurus/preset-classic').Options} */
+      ({
+        docs: {
+          sidebarPath: './sidebars.js',
+          editUrl: undefined,
+        },
+        blog: false,
+        theme: {
+          customCss: './src/css/custom.css',
+        },
+      }),
+    ],
+  ],
+
+  scripts: [
+    {
+      src: 'https://statics.docusapiens.ai/anythingllm-chat-widget.js',
+      'data-embed-id': 'example-uuid',
+      'data-base-api-url': 'https://api-chat-1010464005360.europe-west1.run.app',
+      'data-site-id': siteId,
+      async: true,
+    },
+  ],
+
+  themeConfig:
+    /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
+    ({
+      navbar: {
+        title: siteName,
+        logo: {
+          alt: 'Logo',
+          src: 'img/logo.svg',
+        },
+      },
+      footer: {
+        style: 'dark',
+        copyright: 'Copyright © ' + currentYear + ' ' + siteName + '. Built with Docusapiens.ai.',
+      },
+      prism: {
+        theme: lightTheme,
+        darkTheme: darkTheme,
+      },
+    }),
+};
+
+module.exports = config;
