@@ -1,20 +1,25 @@
-# Use an official Node.js runtime as a base image
-FROM node:22-alpine
+# syntax=docker/dockerfile:1.6
 
-# Set the working directory in the container
+# Base image with pnpm enabled
+FROM node:22-alpine AS base
 WORKDIR /app
+ENV PNPM_HOME="/pnpm" \
+	PATH="$PNPM_HOME:$PATH"
+RUN corepack enable pnpm
 
-# Copy package files to the container
-COPY package*.json ./
-
-# Install dependencies
-RUN rm -rf node_modules && npm install
-
-# Copy all application files
+# Install production dependencies using pnpm and prepare deployable artifact
+FROM base AS builder
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+RUN pnpm fetch --prod
 COPY . .
+RUN --mount=type=cache,target=/pnpm/store pnpm install --prod --offline \
+ && mkdir -p /opt/deploy \
+ && pnpm deploy /opt/deploy --prod --filter docusaurus-example
 
-# Expose the port the app runs on
+# Final runtime image with trimmed dependencies
+FROM node:22-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /opt/deploy/ ./
 EXPOSE 3000
-
-# Command to run the application
 CMD ["node", "index.js"]

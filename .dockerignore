@@ -1,0 +1,7 @@
+node_modules
+build
+.docusaurus
+.git
+.gitignore
+npm-debug.log
+.DS_Store
