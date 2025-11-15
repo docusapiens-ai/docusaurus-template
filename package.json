@@ -12,7 +12,8 @@
     "serve": "docusaurus serve --port 8000",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "generate-config": "node scripts/generate-config.js"
+    "generate-config": "node scripts/generate-config.js",
+    "np": "npx np"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
