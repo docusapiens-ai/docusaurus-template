@@ -28,3 +28,103 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+/* Cookie Consent Banner */
+.cookie-consent-banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  padding: 16px 24px;
+  background: var(--ifm-background-surface-color, #ffffff);
+  border-top: 1px solid var(--ifm-color-emphasis-300, #dadde1);
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+  font-family: var(--ifm-font-family-base);
+  font-size: var(--ifm-font-size-base, 14px);
+  color: var(--ifm-font-color-base, #1c1e21);
+  box-sizing: border-box;
+}
+
+.cookie-consent-content {
+  flex: 1 1 300px;
+  margin-right: 16px;
+  line-height: 1.5;
+}
+
+.cookie-consent-link {
+  color: var(--ifm-color-primary);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.cookie-consent-link:hover {
+  color: var(--ifm-color-primary-dark);
+  text-decoration: underline;
+}
+
+.cookie-consent-buttons {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+.cookie-consent-accept {
+  padding: 8px 24px;
+  border: none;
+  border-radius: var(--ifm-button-border-radius, 4px);
+  background: var(--ifm-color-primary);
+  color: #ffffff;
+  font-size: var(--ifm-font-size-base, 14px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.cookie-consent-accept:hover {
+  background: var(--ifm-color-primary-dark);
+}
+
+.cookie-consent-decline {
+  padding: 8px 24px;
+  border: 1px solid var(--ifm-color-emphasis-300, #dadde1);
+  border-radius: var(--ifm-button-border-radius, 4px);
+  background: transparent;
+  color: var(--ifm-font-color-base, #1c1e21);
+  font-size: var(--ifm-font-size-base, 14px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.cookie-consent-decline:hover {
+  background: var(--ifm-color-emphasis-100, #f5f6f7);
+  border-color: var(--ifm-color-emphasis-400, #c4c6ca);
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 480px) {
+  .cookie-consent-banner {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .cookie-consent-content {
+    margin-right: 0;
+    margin-bottom: 12px;
+  }
+
+  .cookie-consent-buttons {
+    width: 100%;
+  }
+
+  .cookie-consent-accept,
+  .cookie-consent-decline {
+    flex: 1;
+  }
+}
