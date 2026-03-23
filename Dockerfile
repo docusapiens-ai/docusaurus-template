@@ -1,25 +1,19 @@
 # syntax=docker/dockerfile:1.6
 
-# Base image with pnpm enabled
-FROM node:22-alpine AS base
+# Base image with Bun
+FROM oven/bun:1 AS base
 WORKDIR /app
-ENV PNPM_HOME="/pnpm" \
-	PATH="$PNPM_HOME:$PATH"
-RUN corepack enable pnpm
 
-# Install production dependencies using pnpm and prepare deployable artifact
+# Install production dependencies
 FROM base AS builder
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-RUN pnpm fetch --prod
+COPY package.json bun.lockb* ./
+RUN bun install --production --frozen-lockfile
 COPY . .
-RUN --mount=type=cache,target=/pnpm/store pnpm install --prod --offline \
- && mkdir -p /opt/deploy \
- && pnpm deploy /opt/deploy --prod --filter docusaurus-example
 
-# Final runtime image with trimmed dependencies
-FROM node:22-alpine AS runner
+# Final runtime image
+FROM oven/bun:1-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=builder /opt/deploy/ ./
+COPY --from=builder /app/ ./
 EXPOSE 3000
-CMD ["node", "index.js"]
+CMD ["bun", "run", "serve"]

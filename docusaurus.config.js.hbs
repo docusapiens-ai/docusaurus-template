@@ -27,16 +27,22 @@ const config = {
   projectName,
 
   onBrokenLinks: 'warn',
-  onBrokenMarkdownLinks: 'warn',
+
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'warn',
+    },
+  },
 
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
   },
 
-  // Docusaurus Faster configuration (v3.6+)
+  // Docusaurus Faster (v3.6+): SWC + Rspack instead of Babel + webpack
   future: {
-    experimental_faster: true, // Enable all Docusaurus Faster optimizations
+    experimental_faster: true,
+    v4: true,
   },
 
   presets: [
