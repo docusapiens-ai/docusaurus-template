@@ -3,38 +3,57 @@ REGISTRY    = europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai
 PORT        = 8000
 TAG        ?= latest
 
-.PHONY: install start build serve clear generate-config local-build \
-        docker-build docker-build-builder docker-run docker-up docker-stop docker-clean docker-publish
+.PHONY: help install generate-config local-build \
+        docker-build-local docker-build docker-run docker-up docker-stop docker-clean docker-publish
+
+# Default target
+.DEFAULT_GOAL := help
+
+## Show this help message
+help:
+	@echo ""
+	@echo "Usage: make <target> [VAR=value ...]"
+	@echo ""
+	@echo "Development"
+	@awk 'prev ~ /^## / && /^[a-zA-Z_-]+:/ { \
+		printf "  \033[36m%-22s\033[0m %s\n", $$1, substr(prev, 4); \
+		prev="" \
+	} { prev=$$0 }' $(MAKEFILE_LIST) | grep -v "docker"
+	@echo ""
+	@echo "Docker"
+	@awk 'prev ~ /^## / && /^[a-zA-Z_-]+:/ { \
+		printf "  \033[36m%-22s\033[0m %s\n", $$1, substr(prev, 4); \
+		prev="" \
+	} { prev=$$0 }' $(MAKEFILE_LIST) | grep "docker"
+	@echo ""
+	@echo "Variables"
+	@echo "  REPO        Git URL (required for local-build)"
+	@echo "  BRANCH      Branch to clone          (default: main)"
+	@echo "  DOCS_PATH   Sub-directory with docs  (default: repo root)"
+	@echo "  SITE_NAME   Site title               (default: \"Local Build\")"
+	@echo "  SITE_ID     Site identifier          (default: local)"
+	@echo "  SITE_URL    Canonical URL            (default: http://localhost:8000)"
+	@echo "  TAG         Docker image tag         (default: latest)"
+	@echo ""
+
+# ── Development ───────────────────────────────────────────────────────────────
 
 ## Install dependencies with Bun
 install:
 	bun install
 
-## Start development server (hot reload)
-start:
-	bun run start
-
-## Build the static site (uses SWC + Rspack via @docusaurus/faster)
-build:
-	bun run build
-
-## Serve the previously built site locally
-serve:
-	bun run serve
-
-## Clear Docusaurus cache and build artifacts
-clear:
-	bun run clear
-
 ## Generate docusaurus.config.js from the Handlebars template
 generate-config:
-	bun run generate-config
+	@test -n "$(REPO)" || (echo "Error: REPO is required. Example: REPO=https://github.com/owner/repo make generate-config" && exit 1)
+	bun run generate-config \
+		--site-name "$(or $(SITE_NAME),Local Build)" \
+		--site-id   "$(or $(SITE_ID),local)" \
+		--site-url  "$(or $(SITE_URL),http://localhost:8000)" \
+		--github-repo "$(shell echo "$(REPO)" | sed 's|.*github.com/||; s|\.git$$||')"
 
-## Build a remote repo locally inside Docker (emulates Cloud Build, no upload)
-## Usage: REPO=https://github.com/owner/repo make local-build
-##        REPO=... BRANCH=dev DOCS_PATH=docs SITE_NAME="My Docs" make local-build
+## Build a remote repo locally inside Docker (emulates Cloud Build pipeline)
 local-build:
-	@test -n "$(REPO)" || (echo "Error: REPO is required. Usage: REPO=https://github.com/owner/repo make local-build" && exit 1)
+	@test -n "$(REPO)" || (echo "Error: REPO is required. Example: REPO=https://github.com/owner/repo make local-build" && exit 1)
 	./scripts/local-build.sh \
 		--repo "$(REPO)" \
 		$(if $(BRANCH),--branch "$(BRANCH)") \
@@ -43,11 +62,11 @@ local-build:
 		$(if $(SITE_ID),--site-id "$(SITE_ID)") \
 		$(if $(SITE_URL),--site-url "$(SITE_URL)")
 
-## Pre-build the Docker local pipeline image (done automatically by local-build)
-docker-build-builder:
-	docker build -f Dockerfile.local -t docusaurus-template-local .
-
 # ── Docker ────────────────────────────────────────────────────────────────────
+
+## Build the local pipeline image (Dockerfile.local) — done automatically by local-build
+docker-build-local:
+	docker build -f Dockerfile.local -t docusaurus-template-local .
 
 ## Build the production Docker image
 docker-build:
