@@ -3,8 +3,8 @@ REGISTRY    = europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai
 PORT        = 8000
 TAG        ?= latest
 
-.PHONY: install start build serve clear generate-config \
-        docker-build docker-run docker-up docker-stop docker-clean docker-publish
+.PHONY: install start build serve clear generate-config local-build \
+        docker-build docker-build-builder docker-run docker-up docker-stop docker-clean docker-publish
 
 ## Install dependencies with Bun
 install:
@@ -29,6 +29,23 @@ clear:
 ## Generate docusaurus.config.js from the Handlebars template
 generate-config:
 	bun run generate-config
+
+## Build a remote repo locally inside Docker (emulates Cloud Build, no upload)
+## Usage: REPO=https://github.com/owner/repo make local-build
+##        REPO=... BRANCH=dev DOCS_PATH=docs SITE_NAME="My Docs" make local-build
+local-build:
+	@test -n "$(REPO)" || (echo "Error: REPO is required. Usage: REPO=https://github.com/owner/repo make local-build" && exit 1)
+	./scripts/local-build.sh \
+		--repo "$(REPO)" \
+		$(if $(BRANCH),--branch "$(BRANCH)") \
+		$(if $(DOCS_PATH),--docs-path "$(DOCS_PATH)") \
+		$(if $(SITE_NAME),--site-name "$(SITE_NAME)") \
+		$(if $(SITE_ID),--site-id "$(SITE_ID)") \
+		$(if $(SITE_URL),--site-url "$(SITE_URL)")
+
+## Pre-build the Docker local pipeline image (done automatically by local-build)
+docker-build-builder:
+	docker build -f Dockerfile.local -t docusaurus-template-local .
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 

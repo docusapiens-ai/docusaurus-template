@@ -1,0 +1,28 @@
+# syntax=docker/dockerfile:1.6
+# Local pipeline image — standalone, no dependency on the production Dockerfile.
+# Built and run automatically by scripts/local-build.sh.
+#
+# Usage (via Makefile):
+#   REPO=https://github.com/owner/repo make local-build
+
+FROM oven/bun:1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY package.json bun.lockb* ./
+RUN bun install --frozen-lockfile
+
+COPY . .
+
+ENV REPO_URL="" \
+    BRANCH="main" \
+    DOCS_PATH="" \
+    SITE_NAME="Local Build" \
+    SITE_ID="local" \
+    SITE_URL="http://localhost:8000"
+
+ENTRYPOINT ["/bin/bash", "/app/scripts/pipeline.sh"]
