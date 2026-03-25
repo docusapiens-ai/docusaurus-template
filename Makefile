@@ -3,8 +3,8 @@ REGISTRY    = europe-west1-docker.pkg.dev/docusaurus-ai/docusapiens-ai
 PORT        = 8000
 TAG        ?= latest
 
-.PHONY: help install generate-config local-build \
-        docker-build-local docker-build docker-run docker-up docker-stop docker-clean docker-publish
+.PHONY: help install generate-config local-build serve \
+	docker-build-local docker-build docker-run docker-up docker-stop docker-clean docker-publish
 
 # Default target
 .DEFAULT_GOAL := help
@@ -61,6 +61,11 @@ local-build:
 		$(if $(SITE_NAME),--site-name "$(SITE_NAME)") \
 		$(if $(SITE_ID),--site-id "$(SITE_ID)") \
 		$(if $(SITE_URL),--site-url "$(SITE_URL)")
+	bun run serve
+
+## Serve the existing build/ directory locally with Bun
+serve:
+	bun run serve
 
 # ── Docker ────────────────────────────────────────────────────────────────────
 

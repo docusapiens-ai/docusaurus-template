@@ -74,4 +74,3 @@ docker run --rm \
 
 echo ""
 echo "Build complete -> $TEMPLATE_DIR/build"
-echo "Run 'make serve' to preview locally."
